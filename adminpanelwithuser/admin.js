@@ -63,8 +63,9 @@ function getdata(){
         posts_div.innerHTML="<div class='col-sm-4 mt-2 mb-1'>"+
         "<div class='card'>"+
         "<img src='"+value.imageURL+"' style='height:250px;'>"+
-        "<div class='card-body'><p class='card-text'>"+value.text+"</p>"+
+        "<div class='card-body'><p class='card-text'>"+value.text.substring(1, 4)+".....</p>"+
         "<button class='btn btn-danger' id='"+key+"' onclick='delete_post(this.id)'>Delete</button>"+
+        "\t<button class='btn ' id='"+key+"' onclick='detail(this.id)'>More</button>"+
         "</div></div></div>"+posts_div.innerHTML;
       }
 
@@ -95,3 +96,63 @@ function delete_post(key){
     getdata();
 
 }
+
+function detail(key){
+    item=key;
+    firebase.database().ref('blogs/').once('value').then(function(snapshot){
+        //get your posts div
+        var posts_div=document.getElementById('posts');
+        //remove all remaining data in that div
+        posts.innerHTML="";
+        //get data from firebase
+        var data=snapshot.val();
+        console.log(data);
+        //now pass this data to our posts div
+        //we have to pass our data to for loop to get one by one
+        //we are passing the key of that post to delete it from database
+        for(let[key,value] of Object.entries(data)){
+            if(item==key){
+          posts_div.innerHTML="<div class='col-sm-4 mt-2 mb-1'>"+
+          "<div class='card'>"+
+          "<img src='"+value.imageURL+"' style='height:250px;'>"+
+          "<div class='card-body'><p class='card-text'>"+value.text+"</p>"+
+          "<button class='btn btn-danger' id='"+key+"' onclick='delete_post(this.id)'>Delete</button>"+
+          "</div></div></div>"+posts_div.innerHTML;
+            }
+            else
+            {   posts_div.innerHTML="<div class='col-sm-4 mt-2 mb-1'>"+
+            "<div class='card'>"+
+            "<img src='"+value.imageURL+"' style='height:250px;'>"+
+            "<div class='card-body'><p class='card-text'>"+value.text.substring(1, 4)+".....</p>"+
+            "<button class='btn btn-danger' id='"+key+"' onclick='delete_post(this.id)'>Delete</button>"+
+            "\t<button class='btn ' id='"+key+"' onclick='detail(this.id)'>More</button>"+
+            "</div></div></div>"+posts_div.innerHTML;
+
+            }
+        }
+  
+          // //get your posts div
+          // var post_div=document.getElementById('post');
+          // //remove all remaining data in that div
+          // post.innerHTML="";
+          // //get data from firebase
+          // var datas=snapshot.val();
+          // console.log(datas);
+          // //now pass this data to our posts div
+          // //we have to pass our data to for loop to get one by one
+          // //we are passing the key of that post to delete it from database
+          // for(let[key,value] of Object.entries(datas)){
+          //   post_div.innerHTML="<div class='col-sm-4 mt-2 mb-1'>"+
+          //   "<div class='card'>"+
+          //   "<img src='"+value.imageURL+"' style='height:250px;'>"+
+          //   "<div class='card-body'><p class='card-text'>"+value.text+"</p>"+
+          //   "<button class='btn btn-danger' id='"+key+"' onclick='delete_post(this.id)'>Delete</button>"+
+          //   "</div></div></div>"+post_div.innerHTML;
+          // }
+      
+      });
+    
+
+
+}
+
